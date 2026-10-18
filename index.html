@@ -11,7 +11,7 @@
   html,body{height:100%;margin:0;background:var(--bg);color:var(--text);
     font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif;-webkit-tap-highlight-color:transparent}
   body{height:100dvh;overflow:hidden}
-  #stage{position:absolute;inset:0;background:#1f1f21;touch-action:manipulation;overflow:hidden}
+  #stage{position:absolute;inset:0;background:#1f1f21;touch-action:none;overflow:hidden}
   canvas#view{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
   #start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
   #start p{margin:0;color:var(--sub);font-size:14px;line-height:1.7;max-width:30em}
@@ -23,7 +23,7 @@
   #cname{font-size:18px;font-weight:700}
   #chex{font-size:12px;color:var(--sub)}
   #mark{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #000;pointer-events:none;display:none}
-  #note{position:absolute;left:10px;right:10px;top:calc(72px + env(safe-area-inset-top));background:rgba(40,40,43,.88);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--sub);display:none}
+  #note{position:absolute;left:10px;right:10px;top:calc(72px + env(safe-area-inset-top));background:rgba(40,40,43,.88);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px;line-height:1.6;white-space:pre-line;color:var(--text);display:none}
   #panel{position:absolute;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:rgba(56,56,59,.95);border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));display:grid;gap:12px;transition:transform .2s,opacity .2s}
   body:not(.ui) #panel{transform:translateY(100%);opacity:0;pointer-events:none}
   body:not(.ui) #readout,body:not(.ui) #mark,body:not(.ui) #note{visibility:hidden}
@@ -36,7 +36,7 @@
   .sliders{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .sliders label{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
   input[type=range]{width:100%;accent-color:var(--accent)}
-  .btns{display:flex;gap:8px}.btns button{flex:1}
+  .btns{display:flex;gap:6px}.btns button{flex:1;font-size:13px;padding:10px 4px}
 </style>
 </head>
 <body>
@@ -48,7 +48,7 @@
   <div id="start">
     <button class="primary" id="startBtn">カメラを開始</button>
     <button id="chartBtn0">テスト画像で試す</button>
-    <p>色覚のタイプを選ぶと、色の違いが見分けやすくなる「補正」や、そのタイプの「見え方」をカメラ映像で確認できます。画面をタップすると、その場所の色の名前が出ます。映像は端末の外に送られません。操作パネルは、画面をタップすると出てきます。</p>
+    <p>色覚のタイプを選ぶと、色の違いが見分けやすくなる「補正」や、そのタイプの「見え方」をカメラ映像で確認できます。画面をタップすると色の名前と操作パネルが出ます。画面を左右になぞると、色が少しずつずれて、見分けにくい色の差が出てきます。映像は端末の外に送られません。<br>方式：色相回転（Zhu ら, UIST 2024）／見え方の近似（Machado ら, 2009）</p>
   </div>
 
 <div id="panel">
@@ -61,27 +61,26 @@
     </div></div>
   <div class="row"><span>表示</span>
     <div class="seg">
-      <input type="radio" name="mode" id="m0" value="0"><label for="m0">そのまま</label>
-      <input type="radio" name="mode" id="m2" value="2" checked><label for="m2">補正</label>
+      <input type="radio" name="mode" id="m0" value="0" checked><label for="m0">そのまま</label>
+      <input type="radio" name="mode" id="m2" value="2"><label for="m2">色ずらし</label>
       <input type="radio" name="mode" id="m1" value="1"><label for="m1">見え方</label>
-      <input type="radio" name="mode" id="m3" value="3"><label for="m3">補正→見え方</label>
+      <input type="radio" name="mode" id="m3" value="3"><label for="m3">ずらし→見え方</label>
     </div></div>
   <div class="sliders">
     <div><label for="sev"><span>色覚の程度</span><b id="sevV">100%</b></label><input type="range" id="sev" min="0" max="100" value="100"></div>
-    <div><label for="str"><span>補正の強さ</span><b id="strV">100%</b></label><input type="range" id="str" min="0" max="200" value="100"></div>
+    <div><label for="ang"><span>色をずらす角度</span><b id="angV">0°</b></label><input type="range" id="ang" min="0" max="360" value="0"></div>
   </div>
-  <div class="btns"><button id="freeze">一時停止</button><button id="flip">カメラ切替</button><button id="chart">テスト画像</button></div>
+  <div class="btns"><button id="freeze">一時停止</button><button id="flip">カメラ切替</button><button id="chart">テスト画像</button><button id="resetAng">角度0°</button></div>
 </div>
 </div>
 
 <script>
-const MATS = { // Machado et al. 2009（severity 1.0、線形RGB）
+const MATS = { // Machado et al. 2009（severity 1.0、線形RGBに適用）
   p:[[0.152286,1.052583,-0.204868],[0.114503,0.786281,0.099216],[-0.003882,-0.048116,1.051998]],
   d:[[0.367322,0.860646,-0.227968],[0.280085,0.672501,0.047413],[-0.011820,0.042940,0.968881]],
   t:[[1.255528,-0.076749,-0.178779],[-0.078411,0.930809,0.147602],[0.004733,0.691367,0.303900]],
-  a:[[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722]]
+  a:[[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722],[0.2126,0.7152,0.0722]] // 全色盲：Rec.709輝度
 };
-const KIND = {p:0,d:0,t:1,a:2};
 const $ = id => document.getElementById(id);
 const video = document.createElement('video');
 video.playsInline = true; video.muted = true; video.setAttribute('playsinline','');
@@ -89,20 +88,14 @@ const cv = $('view');
 const gl = cv.getContext('webgl',{antialias:false,preserveDrawingBuffer:false});
 
 const VS = `attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-const FS = `precision highp float;varying vec2 uv;uniform sampler2D tex;uniform mat3 M;
-uniform float mode,strength,kind;
+const FS = `precision highp float;varying vec2 uv;uniform sampler2D tex;uniform mat3 M;uniform mat3 R;uniform float mode;
 vec3 toLin(vec3 c){return mix(c/12.92,pow((c+.055)/1.055,vec3(2.4)),step(.04045,c));}
 vec3 toSrgb(vec3 c){c=clamp(c,0.,1.);return mix(c*12.92,1.055*pow(c,vec3(1./2.4))-.055,step(.0031308,c));}
 void main(){
-  vec3 lin=toLin(texture2D(tex,uv).rgb);
-  vec3 sim=M*lin; vec3 o=lin;
-  if(mode>1.5){
-    vec3 e=lin-sim; vec3 add=vec3(0.);
-    if(kind<.5) add=vec3(0.,.7*e.r+e.g,.7*e.r+e.b);
-    else if(kind<1.5) add=vec3(e.r+.7*e.b,e.g+.7*e.b,0.);
-    o=lin+strength*add;
-    if(mode>2.5) o=M*clamp(o,0.,1.);
-  } else if(mode>.5) o=sim;
+  vec3 lin=toLin(texture2D(tex,uv).rgb); vec3 o=lin;
+  if(mode>.5&&mode<1.5) o=M*lin;               // 見え方（Machado）
+  else if(mode>1.5){ o=clamp(R*lin,0.,1.);     // グレー軸まわりの色相回転（Zhu）
+    if(mode>2.5) o=M*o; }                      // ずらした映像の見え方
   gl_FragColor=vec4(toSrgb(o),1.);
 }`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x}
@@ -118,28 +111,85 @@ const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
 const U = n => gl.getUniformLocation(prog,n);
 
-const st = {chart:false,type:'p',mode:2,sev:1,str:1,frozen:false,facing:'environment',pt:{x:.5,y:.5},ready:false};
+const st = {chart:false,type:'p',mode:0,sev:1,ang:0,frozen:false,facing:'environment',pt:{x:.5,y:.5},ready:false,pairs:[]};
 const frozenCv = document.createElement('canvas'), fctx = frozenCv.getContext('2d',{willReadFrequently:true});
 const sampCv = document.createElement('canvas'); sampCv.width = sampCv.height = 1;
 const sctx = sampCv.getContext('2d',{willReadFrequently:true});
 
-function updateUniforms(){
-  const F = MATS[st.type], m = new Float32Array(9);
-  for(let r=0;r<3;r++)for(let c=0;c<3;c++){
-    const id = r===c?1:0;
-    m[c*3+r] = id + st.sev*(F[r][c]-id); // 列優先
+/* ---------- 色計算（シェーダと同じ式。検証表に使う） ---------- */
+const toLinJ=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+const toSrgb8=v=>{v=Math.min(1,Math.max(0,v));return Math.round(255*(v<=.0031308?v*12.92:1.055*Math.pow(v,1/2.4)-.055))};
+const mv=(m,v)=>[0,1,2].map(r=>m[r][0]*v[0]+m[r][1]*v[1]+m[r][2]*v[2]);
+const clamp01=v=>v.map(x=>Math.min(1,Math.max(0,x)));
+function cvdM(){const F=MATS[st.type];return F.map((row,r)=>row.map((x,c)=>{const id=r===c?1:0;return id+st.sev*(x-id)}))}
+function rotM(deg){ // グレー軸(1,1,1)/√3まわりの回転
+  const t=deg*Math.PI/180,c=Math.cos(t),s=Math.sin(t),k=(1-c)/3,u=s/Math.sqrt(3);
+  return [[c+k,k-u,k+u],[k+u,c+k,k-u],[k-u,k+u,c+k]];
+}
+function lab(v){const [r,g,b]=v;
+  const X=.4124564*r+.3575761*g+.1804375*b, Y=.2126729*r+.7151522*g+.0721750*b, Z=.0193339*r+.1191920*g+.9503041*b;
+  const f=t=>t>216/24389?Math.cbrt(t):(24389/27*t+16)/116, fx=f(X/.95047), fy=f(Y), fz=f(Z/1.08883);
+  return [116*fy-16,500*(fx-fy),200*(fy-fz)];}
+const dE=(a,b)=>{const p=lab(a),q=lab(b);return Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2])};
+
+/* ---------- テスト画像：選んだタイプで「本当に混同する色」の組を計算で作る ---------- */
+const BASES=[[184,74,74],[100,204,102],[136,136,136],[86,95,214],[230,160,180],[120,80,50]];
+function nullDir(){ // 二色覚の混同線の方向（線形RGB）＝変換行列の零空間
+  const F=MATS[st.type];
+  if(st.type==='a'){const w=F[0],n=[w[1]-w[2],w[2]-w[0],w[0]-w[1]],m=Math.hypot(...n);return n.map(x=>x/m)} // 灰色軸と輝度ベクトルの両方に直交
+  let best=null,bm=0;
+  [[0,1],[0,2],[1,2]].forEach(([i,j])=>{const a=F[i],b=F[j];
+    const n=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],m=Math.hypot(...n);
+    if(m>bm){bm=m;best=n.map(x=>x/m)}});
+  return best;
+}
+function partner(a){ // aと同じ混同線上で、色域内でいちばん遠い色
+  const n=nullDir();let tp=Infinity,tm=Infinity;
+  for(let k=0;k<3;k++){
+    if(n[k]>1e-6){tp=Math.min(tp,(1-a[k])/n[k]);tm=Math.min(tm,a[k]/n[k]);}
+    else if(n[k]<-1e-6){tp=Math.min(tp,a[k]/-n[k]);tm=Math.min(tm,(1-a[k])/-n[k]);}
   }
-  gl.uniformMatrix3fv(U('M'),false,m);
-  gl.uniform1f(U('mode'),st.mode);
-  gl.uniform1f(U('strength'),st.str);
-  gl.uniform1f(U('kind'),KIND[st.type]);
-  const n=$('note');
-  if(st.type==='a' && st.mode>=2){n.style.display='block';n.textContent='全色盲は色の情報そのものがないため、補正はできません。色の名前表示を使ってください。';}
-  else if(st.mode===1){n.style.display='block';n.textContent='選んだタイプの人の見え方を近似したものです。';}
-  else if(st.mode===3){n.style.display='block';n.textContent='補正した映像を、そのタイプの人が見た場合の近似です。ここで色の違いが見えていれば、補正が効いています。';}
-  else n.style.display='none';
+  const t=tp>=tm?tp:-tm;return a.map((x,k)=>x+.95*t*n[k]);
+}
+function makeChart(){
+  st.pairs=BASES.map(c=>{const a=c.map(toLinJ),b=partner(a);return {a,b,a8:a.map(toSrgb8),b8:b.map(toSrgb8)}});
+  const W=960,H=540,c=frozenCv;c.width=W;c.height=H;const x=fctx;
+  x.fillStyle='rgb(188,188,188)';x.fillRect(0,0,W,H);
+  const cw=240,ch=170,gx=(W-3*cw)/4,gy=(H-2*(ch+30))/3;
+  x.textAlign='center';x.font='22px sans-serif';
+  st.pairs.forEach((p,i)=>{const px=gx+(i%3)*(cw+gx),py=gy+Math.floor(i/3)*(ch+30+gy);
+    x.fillStyle=`rgb(${p.a8})`;x.fillRect(px,py,cw/2,ch);
+    x.fillStyle=`rgb(${p.b8})`;x.fillRect(px+cw/2,py,cw/2,ch);
+    x.fillStyle='#222';x.fillText('①②③④⑤⑥'[i],px+cw/2,py+ch+26);});
+}
+function verifyText(){
+  const M=cvdM(),R=rotM(st.ang);
+  let s='色の差（CIELAB ΔE）。約7以上で見分けやすい（3JND）\n';
+  st.pairs.forEach((p,i)=>{
+    const n=dE(p.a,p.b),s0=dE(mv(M,p.a),mv(M,p.b));
+    const s1=dE(mv(M,clamp01(mv(R,p.a))),mv(M,clamp01(mv(R,p.b))));
+    s+=`${'①②③④⑤⑥'[i]} 普通の目 ${n.toFixed(0)} ／ そのタイプ ${s0.toFixed(1)} → ずらし後 ${s1.toFixed(1)}${s1>=6.9?' ✓':''}\n`;
+  });
+  return s;
 }
 
+/* ---------- 表示更新 ---------- */
+function refreshNote(){
+  const n=$('note');let t='';
+  if(st.type==='a'&&st.mode>=2) t+='全色盲は色の情報そのものがないため、色ずらしでは区別できません。色名表示を使ってください。\n';
+  else if(st.mode===1) t+='選んだタイプの見え方の近似です。\n';
+  else if(st.mode===2) t+='画面を左右になぞると色がずれます（0°で元の色）。\n';
+  else if(st.mode===3) t+='ずらした映像を、そのタイプの人が見た場合の近似です。\n';
+  if(st.chart) t+=verifyText();
+  n.style.display=t?'block':'none';n.textContent=t.trim();
+}
+function updateUniforms(){
+  const to=m=>{const o=new Float32Array(9);for(let r=0;r<3;r++)for(let c=0;c<3;c++)o[c*3+r]=m[r][c];return o};
+  gl.uniformMatrix3fv(U('M'),false,to(cvdM()));
+  gl.uniformMatrix3fv(U('R'),false,to(rotM(st.ang)));
+  gl.uniform1f(U('mode'),st.mode);
+  refreshNote();
+}
 function frame(){
   requestAnimationFrame(frame);
   if(!st.ready) return;
@@ -149,7 +199,6 @@ function frame(){
   }
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 }
-
 function contentRect(){
   const r=cv.getBoundingClientRect(), vw=cv.width, vh=cv.height;
   const s=Math.min(r.width/vw,r.height/vh), w=vw*s, h=vh*s;
@@ -160,14 +209,6 @@ function placeMark(){
   m.style.display=st.ready?'block':'none';
   m.style.left=(c.x+st.pt.x*c.w)+'px'; m.style.top=(c.y+st.pt.y*c.h)+'px';
 }
-$('stage').addEventListener('pointerdown',e=>{
-  if(!st.ready||e.target.closest('button,#panel')) return;
-  const r=cv.getBoundingClientRect(), c=contentRect();
-  const x=(e.clientX-r.left-c.x)/c.w, y=(e.clientY-r.top-c.y)/c.h;
-  if(x<0||x>1||y<0||y>1) return;
-  st.pt={x,y}; placeMark(); sample(); showUI();
-});
-addEventListener('resize',placeMark);
 let uiTimer;
 function showUI(){
   document.body.classList.add('ui');
@@ -176,7 +217,35 @@ function showUI(){
 }
 $('panel').addEventListener('pointerdown',showUI);
 $('panel').addEventListener('input',showUI);
+addEventListener('resize',placeMark);
 
+function setMode(m){st.mode=m;$('m'+m).checked=true;}
+function setAng(a){st.ang=a;$('ang').value=Math.round(a);$('angV').textContent=Math.round(a)+'°';updateUniforms();}
+
+/* タップ＝色を調べる＋パネル表示 / 左右になぞる＝色相を回す */
+const stage=$('stage');let drag=null;
+stage.addEventListener('pointerdown',e=>{
+  if(!st.ready||e.target.closest('button,#panel')) return;
+  drag={x:e.clientX,a0:st.ang,moved:false};
+  try{stage.setPointerCapture(e.pointerId)}catch(_){}
+});
+stage.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  const dx=e.clientX-drag.x;
+  if(!drag.moved&&Math.abs(dx)>8) drag.moved=true;
+  if(drag.moved){ if(st.mode<2) setMode(2); setAng(((drag.a0+dx*.4)%360+360)%360); showUI(); }
+});
+stage.addEventListener('pointerup',e=>{
+  if(!drag) return; const d=drag; drag=null;
+  if(d.moved) return;
+  const r=cv.getBoundingClientRect(), c=contentRect();
+  const x=(e.clientX-r.left-c.x)/c.w, y=(e.clientY-r.top-c.y)/c.h;
+  if(x<0||x>1||y<0||y>1){showUI();return;}
+  st.pt={x,y}; placeMark(); sample(); showUI();
+});
+stage.addEventListener('pointercancel',()=>{drag=null});
+
+/* ---------- 色名（実際の色。※名前のルールは簡易版） ---------- */
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;
   let h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));
     h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360;}
@@ -215,6 +284,7 @@ function sample(){
 }
 setInterval(sample,200);
 
+/* ---------- カメラ / テスト画像 ---------- */
 async function startCam(){
   try{
     if(video.srcObject) video.srcObject.getTracks().forEach(t=>t.stop());
@@ -225,23 +295,12 @@ async function startCam(){
     cv.width=Math.round(video.videoWidth*sc); cv.height=Math.round(video.videoHeight*sc);
     frozenCv.width=cv.width; frozenCv.height=cv.height;
     gl.viewport(0,0,cv.width,cv.height);
-    st.ready=true; st.frozen=false; $('freeze').textContent='一時停止';
-    st.chart=false; $('start').style.display='none'; updateUniforms(); placeMark(); showUI();
+    st.ready=true; st.frozen=false; st.chart=false; $('freeze').textContent='一時停止';
+    $('start').style.display='none'; updateUniforms(); placeMark(); showUI();
   }catch(e){
     $('start').style.display='flex';
     $('start').querySelector('p').textContent='カメラを開始できませんでした。ブラウザのカメラ許可を確認して、もう一度押してください。（'+e.name+'）';
   }
-}
-function makeChart(){
-  const W=960,H=540,c=frozenCv; c.width=W;c.height=H;
-  const x=fctx; x.fillStyle='#808080';x.fillRect(0,0,W,H);
-  const pairs=[['#d03a2e','#5f9a3a','赤 / 緑'],['#8a5a2b','#4f6a2a','茶 / 深緑'],['#e6a1b5','#aeaeb0','ピンク / 灰'],['#8a5ac8','#4f6ee0','紫 / 青'],
-    ['#e08a2b','#a8b82a','橙 / 黄緑'],['#2f6fd0','#2f9a8f','青 / 青緑'],['#d8c33a','#e0b0c0','黄 / 淡ピンク'],['#c64a4a','#6a6a6a','赤 / 灰']];
-  const cw=210,ch=170,gx=(W-4*cw)/5,gy=(H-2*(ch+30))/3;
-  x.textAlign='center';x.font='20px sans-serif';
-  pairs.forEach((p,i)=>{const px=gx+(i%4)*(cw+gx),py=gy+Math.floor(i/4)*(ch+30+gy);
-    x.fillStyle=p[0];x.fillRect(px,py,cw/2,ch);x.fillStyle=p[1];x.fillRect(px+cw/2,py,cw/2,ch);
-    x.fillStyle='#f0f0f0';x.fillText(p[2],px+cw/2,py+ch+24);});
 }
 function showChart(){
   makeChart(); cv.width=960; cv.height=540; gl.viewport(0,0,960,540);
@@ -251,9 +310,10 @@ function showChart(){
   $('freeze').textContent='一時停止'; $('start').style.display='none';
   updateUniforms(); placeMark(); sample(); showUI();
 }
+const refresh=()=>st.chart?showChart():updateUniforms();
+$('startBtn').onclick=startCam;
 $('chartBtn0').onclick=showChart;
 $('chart').onclick=()=>{ if(st.chart) startCam(); else showChart(); };
-$('startBtn').onclick=startCam;
 $('flip').onclick=()=>{st.facing=st.facing==='environment'?'user':'environment';startCam();};
 $('freeze').onclick=()=>{
   if(!st.ready||st.chart) return;
@@ -261,10 +321,11 @@ $('freeze').onclick=()=>{
   if(st.frozen) fctx.drawImage(video,0,0,frozenCv.width,frozenCv.height);
   $('freeze').textContent=st.frozen?'再開':'一時停止';
 };
-document.querySelectorAll('input[name=type]').forEach(i=>i.onchange=()=>{st.type=i.value;updateUniforms();});
+$('resetAng').onclick=()=>{setAng(0);showUI();};
+document.querySelectorAll('input[name=type]').forEach(i=>i.onchange=()=>{st.type=i.value;refresh();});
 document.querySelectorAll('input[name=mode]').forEach(i=>i.onchange=()=>{st.mode=+i.value;updateUniforms();});
-$('sev').oninput=e=>{st.sev=e.target.value/100;$('sevV').textContent=e.target.value+'%';updateUniforms();};
-$('str').oninput=e=>{st.str=e.target.value/100;$('strV').textContent=e.target.value+'%';updateUniforms();};
+$('sev').oninput=e=>{st.sev=e.target.value/100;$('sevV').textContent=e.target.value+'%';refresh();};
+$('ang').oninput=e=>{setAng(+e.target.value);};
 if(!gl){$('start').querySelector('p').textContent='このブラウザはWebGLに対応していません。';$('startBtn').style.display='none';}
 updateUniforms(); frame();
 </script>
