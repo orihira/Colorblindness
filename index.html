@@ -24,20 +24,43 @@
   #chex{font-size:12px;color:var(--sub)}
   #mark{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #000;pointer-events:none;display:none}
   #note{position:absolute;left:10px;right:10px;top:calc(72px + env(safe-area-inset-top));background:rgba(40,40,43,.88);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px;line-height:1.6;white-space:pre-line;color:var(--text);display:none}
-  #panel{position:absolute;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:rgba(56,56,59,.95);border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));display:grid;gap:11px;transition:transform .2s,opacity .2s}
+  #status{position:absolute;right:10px;top:calc(10px + env(safe-area-inset-top));background:rgba(40,40,43,.88);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--text);max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body:not(.ui) #status{visibility:hidden}
+  #panel{position:absolute;left:0;right:0;bottom:0;max-width:600px;max-height:78dvh;overflow:auto;margin:0 auto;background:rgba(50,50,53,.96);backdrop-filter:blur(8px);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));display:grid;gap:14px;box-shadow:0 -8px 30px rgba(0,0,0,.35);transition:transform .22s ease,opacity .22s ease}
   body:not(.ui) #panel{transform:translateY(100%);opacity:0;pointer-events:none}
   body:not(.ui) #readout,body:not(.ui) #mark,body:not(.ui) #note{visibility:hidden}
-  .row{display:grid;gap:6px}
-  .row>span{font-size:12px;color:var(--sub)}
-  .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
-  .seg input{position:absolute;opacity:0;pointer-events:none}
-  .seg label{display:block;text-align:center;padding:9px 2px;border:1px solid var(--line);border-radius:10px;font-size:13px;cursor:pointer;background:var(--bg)}
-  .seg input:checked+label{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  .chk{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--sub)}
-  .sliders{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .sliders label{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
-  input[type=range]{width:100%;accent-color:var(--accent)}
-  .btns{display:flex;gap:6px;flex-wrap:wrap}.btns button{flex:1 1 22%;font-size:13px;padding:10px 4px}
+  .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:4px auto 0}
+  .sect{display:grid;gap:8px}
+  .sect h3{margin:0;font-size:12px;font-weight:600;color:var(--sub);letter-spacing:.04em}
+  .chips{display:grid;gap:8px}.chips.c4{grid-template-columns:repeat(4,1fr)}
+  .chips input{position:absolute;opacity:0;pointer-events:none}
+  .chips label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:48px;padding:6px 2px;text-align:center;border:1px solid var(--line);border-radius:12px;font-size:14px;line-height:1.25;cursor:pointer;background:var(--bg);transition:background .15s,border-color .15s}
+  .chips label small{font-size:11px;color:var(--sub)}
+  .chips input:checked+label{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .chips input:checked+label small{color:#e4ecff}
+  .chips input:focus-visible+label{outline:3px solid #fff;outline-offset:2px}
+  #modeDesc{margin:0;font-size:12px;line-height:1.6;color:var(--sub);min-height:2.4em}
+  .toggles{display:flex;gap:10px;flex-wrap:wrap}
+  .sw{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;min-height:36px}
+  .sw input{appearance:none;-webkit-appearance:none;width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;margin:0;cursor:pointer;transition:background .15s;flex:none}
+  .sw input::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
+  .sw input:checked{background:var(--accent)}.sw input:checked::after{transform:translateX(18px)}
+  .sw input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .sliders{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sliders label{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--sub);margin-bottom:4px}
+  .sliders b{font-size:14px;color:var(--text);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;height:28px;accent-color:var(--accent);margin:0}
+  .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .acts button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px;font-size:12px;line-height:1.2;border-radius:12px}
+  .acts svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .acts button.hl{border-color:var(--accent);color:#cfe0ff}
+  @media (min-width:900px){
+    #panel{left:auto;top:0;bottom:0;right:0;width:380px;max-width:none;max-height:none;border-radius:0;border:0;border-left:1px solid var(--line);padding-top:calc(14px + env(safe-area-inset-top))}
+    .grab{display:none}
+    body:not(.ui) #panel{transform:translateX(100%)}
+    #status{right:394px}
+  }
+  @media (prefers-reduced-motion:reduce){#panel,.chips label,.sw input,.sw input::after{transition:none}}
   #test{position:absolute;inset:0;z-index:5;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom));overflow:auto}
   #tQ,#tRes{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:420px}
   #tRes{display:none}
@@ -45,7 +68,8 @@
   #tHint{margin:0;font-size:11px;color:var(--sub);text-align:center}
   #plate{width:min(86vw,46vh);height:auto;border-radius:50%}
   #pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(86vw,340px)}
-  #pad button{padding:12px 0;font-size:20px}
+  #pad button{padding:11px 0;font-size:20px}
+  #tAns{font-size:30px;letter-spacing:.25em;min-height:40px;font-weight:700}
   #tNone{width:min(86vw,340px)}
   .tfoot{display:flex;justify-content:space-between;align-items:center;width:min(86vw,340px);font-size:12px;color:var(--sub)}
   #tResTxt{white-space:pre-line;font-size:14px;line-height:1.7;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;width:100%}
@@ -65,45 +89,59 @@
     <p>画面をタップすると操作パネルと色の名前が出ます（もう一度タップで消えます）。<br>方式：赤緑→青黄の投影（Viénotら）／色相回転（Zhuら, UIST 2024）／見え方の近似（Machadoら, 2009）／数字テスト（Cambridge Colour Test の考え方）。映像は端末の外に送られません。</p>
   </div>
 
-  <div id="panel">
-    <div class="row"><span>色覚のタイプ</span>
-      <div class="seg">
-        <input type="radio" name="type" id="ty_p" value="p" checked><label for="ty_p">P型（赤）</label>
-        <input type="radio" name="type" id="ty_d" value="d"><label for="ty_d">D型（緑）</label>
-        <input type="radio" name="type" id="ty_t" value="t"><label for="ty_t">T型（青）</label>
-        <input type="radio" name="type" id="ty_a" value="a"><label for="ty_a">全色盲</label>
+  <div id="status"></div>
+  <div id="panel" role="region" aria-label="操作パネル">
+    <div class="grab"></div>
+    <div class="sect"><h3>色覚のタイプ</h3>
+      <div class="chips c4">
+        <input type="radio" name="type" id="ty_p" value="p" checked><label for="ty_p">P型<small>赤が弱い</small></label>
+        <input type="radio" name="type" id="ty_d" value="d"><label for="ty_d">D型<small>緑が弱い</small></label>
+        <input type="radio" name="type" id="ty_t" value="t"><label for="ty_t">T型<small>青が弱い</small></label>
+        <input type="radio" name="type" id="ty_a" value="a"><label for="ty_a">全色盲<small>色なし</small></label>
       </div></div>
-    <div class="row"><span>表示</span>
-      <div class="seg">
+    <div class="sect"><h3>表示モード</h3>
+      <div class="chips c4">
         <input type="radio" name="proc" id="pr0" value="0" checked><label for="pr0">そのまま</label>
-        <input type="radio" name="proc" id="pr1" value="1"><label for="pr1">赤緑→青黄</label>
+        <input type="radio" name="proc" id="pr1" value="1"><label for="pr1">高精度変換</label>
         <input type="radio" name="proc" id="pr2" value="2"><label for="pr2">色ずらし</label>
         <input type="radio" name="proc" id="pr3" value="3"><label for="pr3">ハイライト</label>
       </div>
-      <label class="chk"><input type="checkbox" id="simChk">そのタイプの見え方で確認する（色覚が普通の人の確認用）</label></div>
-    <div class="sliders">
-      <div><label for="sev"><span>色覚の程度</span><b id="sevV">100%</b></label><input type="range" id="sev" min="0" max="100" value="100"></div>
-      <div class="ctx" data-m="1"><label for="beta"><span>変換の強さ</span><b id="betaV">100%</b></label><input type="range" id="beta" min="0" max="300" value="100"></div>
-      <div class="ctx" data-m="2" style="display:none"><label for="ang"><span>色をずらす角度</span><b id="angV">0°</b></label><input type="range" id="ang" min="0" max="360" value="0"></div>
-      <div class="ctx" data-m="3" style="display:none"><label for="hr"><span>色の範囲</span><b id="hrV">ΔE20</b></label><input type="range" id="hr" min="5" max="60" value="20"></div>
+      <p id="modeDesc"></p>
+      <div class="toggles">
+        <label class="sw"><input type="checkbox" id="simChk"><span>その人の見え方で確認</span></label>
+        <label class="sw"><input type="checkbox" id="cmpChk"><span>左右比較（元／変換後）</span></label>
+      </div></div>
+    <div class="sect"><h3>調整</h3>
+      <div class="sliders">
+        <div><label for="sev"><span>色覚の程度</span><b id="sevV">100%</b></label><input type="range" id="sev" min="0" max="100" value="100"></div>
+        <div class="ctx" data-m="1"><label for="beta"><span>変換の強さ</span><b id="betaV">100%</b></label><input type="range" id="beta" min="0" max="150" value="100"></div>
+        <div class="ctx" data-m="2" style="display:none"><label for="ang"><span>色をずらす角度</span><b id="angV">0°</b></label><input type="range" id="ang" min="0" max="360" value="0"></div>
+        <div class="ctx" data-m="3" style="display:none"><label for="hr"><span>色の範囲</span><b id="hrV">ΔE20</b></label><input type="range" id="hr" min="5" max="60" value="20"></div>
+      </div></div>
+    <div class="acts">
+      <button id="freeze"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg><span id="freezeL">一時停止</span></button>
+      <button id="flip"><svg viewBox="0 0 24 24"><path d="M4 8h12l-3-3M20 16H8l3 3"/></svg><span>カメラ切替</span></button>
+      <button id="chart"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M5 18l5-5 3 3 3-3 3 3"/></svg><span>テスト画像</span></button>
+      <button id="testBtn" class="hl"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 10.5a3 3 0 015.5 1.2c0 1.8-2.5 2-2.5 3.3M12 17.5v.2"/></svg><span>色覚テスト</span></button>
     </div>
-    <div class="btns"><button id="freeze">一時停止</button><button id="flip">カメラ切替</button><button id="chart">テスト画像</button><button id="testBtn">色覚テスト</button></div>
   </div>
 
   <div id="test">
     <div id="tQ">
-      <p id="tTitle">円の中の数字を選んでください。見えなければ「見えない」。</p>
+      <p id="tTitle">円の中の数字を入力してください。見えなければ「見えない」。</p>
       <p id="tHint">画面の明るさを上げて、ナイトモードや色味の調整はオフにしてください。</p>
-      <canvas id="plate" width="360" height="360"></canvas>
+      <canvas id="plate" width="480" height="480"></canvas>
+      <div id="tAns">—</div>
       <div id="pad"></div>
       <button id="tNone">見えない</button>
       <div class="tfoot"><span id="tProg"></span><button id="tCancel">やめる</button></div>
     </div>
     <div id="tRes">
       <div id="tResTxt"></div>
-      <div class="btns2"><button class="primary" id="tApply">この設定を使う</button><button id="tAgain">もう一度</button><button id="tClose">閉じる</button></div>
+      <div class="btns2"><button class="primary" id="tApply">この設定を使う</button><button id="tTune">調整テスト（おすすめ）</button><button id="tAlt">もう一方で使う</button><button id="tMore">詳しく調べる</button><button id="tAgain">もう一度</button><button id="tClose">閉じる</button></div>
     </div>
   </div>
+
 </div>
 
 <script>
@@ -172,43 +210,150 @@ function autoAngle(type,sev){
   for(let g=0;g<360;g+=5){const R=rotM(g),v=p10(P.map(([x,y])=>dE(mv(M,clamp01(mv(R,x))),mv(M,clamp01(mv(R,y))))));if(v>bestV){bestV=v;bestA=g}}
   return bestA;}
 
-/* ===== 数字テスト（Cambridge Colour Test の考え方：混同線に沿った色の差を階段法で変える） ===== */
+/* ===== 数字テスト（実在の検査表の構成に準拠） =====
+ 構成：デモ板→空白板→スクリーニング(P/D/T各2枚)→[通過なら終了]→分類板(Ishihara 22-25型の2桁)→程度判定(階段法)
+ 板の難しさ：シンボルと背景の色差ΔE*ab。目安は 弱15–22／中30–40／強50–60（Birch 1993、Jurasevska 2014）
+ 板の色：混同線上の色（灰色と区別がつかない色）＋明るさのノイズ（KAMS/HRRと同じ考え方） */
 const BASES=[[184,74,74],[100,204,102],[136,136,136],[86,95,214],[230,160,180],[120,80,50]];
 const BASES_L=BASES.map(c=>c.map(toLinJ));
-const AMIN=.03,STEP=1.7,DE_TH=4.6; // 普通の目が読める下限を ΔE≈4.6（約2JND）と仮定
-function plateD(obs,s,axis,alpha){ // 観測者(obs,重さs)に、axis方向の色差αの板がどれだけの色差に見えるか
-  const M=cvdM(obs,s),n=nullDir(axis);let t=0;
-  BASES_L.forEach(a=>{const [lo,hi]=pairAt(a,n,alpha);t+=dE(mv(M,lo),mv(M,hi));});
-  return t/BASES_L.length;}
-function newAxis(max){return {a:.35,dir:0,rev:[],n:0,max,done:false,fail:false,floor:false,top:0,fl:0,hist:[]};}
-function stairUpdate(ax,ok){ // 1回正解で色差を下げ、1回不正解で上げる（反転の平均がしきい値）
-  ax.n++;ax.hist.push([ax.a,ok]);
-  if(ok&&ax.a<=AMIN*1.001){ax.fl++;if(ax.fl>=2){ax.floor=true;ax.done=true;return}}
-  if(!ok&&ax.a>=.999){ax.top++;if(ax.top>=2){ax.fail=true;ax.done=true;return}}
+const LADDER=[7,10,15,20,25,30,40,50,60]; // 階段法で使う色差ΔE
+const DE_REF=9;                           // 普通の目が読める下限ΔE（KAMSの最小板が9）
+const SCREEN_DE=18;                       // スクリーニング板の色差（弱い色覚異常の帯 15–22）
+const CLASS_DE=40;                        // 分類板の色差（中等度の帯）
+const YL=[.22,.34];                       // 灰色の明るさ（線形）。KAMSと同じ『明るい・暗い』の2段階だけにして、明るさのノイズを抑える
+const _tc={};
+function solveT(a,n,sign,tmax,T){
+  const col=t=>a.map((x,i)=>x+sign*t*n[i]);let hi=tmax*.98;
+  if(dE(a,col(hi))<=T) return hi;
+  let lo=0;for(let i=0;i<30;i++){const m=(lo+hi)/2;if(dE(a,col(m))<T)lo=m;else hi=m;}
+  return (lo+hi)/2;}
+function tTable(axis,T){ // 灰色から混同線上へ、色差がTになる移動量
+  const k=axis+'|'+T;if(_tc[k])return _tc[k];
+  const n=nullDir(axis);
+  const rows=YL.map(Y=>{const a=[Y,Y,Y],g=gap(a,n);return {Y,a,tp:solveT(a,n,1,g.tp,T),tm:solveT(a,n,-1,g.tm,T)};});
+  return _tc[k]={n,rows};}
+function symColor(axis,T,idx,sign){const {n,rows}=tTable(axis,T),r=rows[idx],t=sign>0?r.tp:r.tm;
+  return r.a.map((x,i)=>x+sign*t*n[i]);}
+function plateAtten(obs,s,axis){ // 観測者(obs,重さs)に、axis方向の色差がどれだけ残って見えるか（0〜1）
+  const M=cvdM(obs,s),{rows}=tTable(axis,30);let num=0,den=0;
+  rows.forEach(r=>[1,-1].forEach(sg=>{const c=symColor(axis,30,rows.indexOf(r),sg);
+    num+=dE(mv(M,r.a),mv(M,c));den+=dE(r.a,c);}));
+  return num/den;}
+function estSev(type,Tthr){ // 読めた最小色差Tthr → モデル上の重さ(0〜1)
+  if(Tthr>=65) return 1;
+  const f=DE_REF/Tthr;if(f>=1) return 0;
+  if(plateAtten(type,1,type)>=f) return 1;
+  let lo=0,hi=1;for(let i=0;i<18;i++){const m=(lo+hi)/2;if(plateAtten(type,m,type)>=f)lo=m;else hi=m;}
+  return (lo+hi)/2;}
+function gradeOf(T){return T<13?'none':T<26?'mild':T<45?'medium':'strong';}
+function newAxis(max){return {i:5,dir:0,rev:[],n:0,max,done:false,fail:false,floor:false,top:0,fl:0,hist:[]};}
+const axT=ax=>LADDER[ax.i];
+function stairUpdate(ax,ok){ // 1回正解で色差を下げ、不正解で上げる。反転した色差の中央値がしきい値
+  const cur=LADDER[ax.i];ax.n++;ax.hist.push([cur,ok]);
+  if(ok&&ax.i===0){ax.fl++;if(ax.fl>=2){ax.floor=true;ax.done=true;return}}
+  if(!ok&&ax.i===LADDER.length-1){ax.top++;if(ax.top>=2){ax.fail=true;ax.done=true;return}}
   const dir=ok?-1:1;
-  if(ax.dir!==0&&dir!==ax.dir) ax.rev.push(ax.a);
-  ax.dir=dir;ax.a=Math.min(1,Math.max(AMIN,ax.a*(dir<0?1/STEP:STEP)));
+  if(ax.dir!==0&&dir!==ax.dir) ax.rev.push(cur);
+  ax.dir=dir;ax.i=Math.min(LADDER.length-1,Math.max(0,ax.i+dir));
   if(ax.rev.length>=4||ax.n>=ax.max) ax.done=true;}
 function thrOf(ax){
-  if(ax.fail) return 1.5;
-  if(ax.floor) return AMIN;
-  if(ax.rev.length>=2){const r=ax.rev.slice().sort((x,y)=>x-y);return r[Math.floor(r.length/2)];} // 反転値の中央値（ミスに強い）
+  if(ax.fail) return 70;
+  if(ax.floor) return LADDER[0];
+  if(ax.rev.length>=2){const r=ax.rev.slice().sort((x,y)=>x-y);return r[Math.floor(r.length/2)];}
   const ok=ax.hist.filter(h=>h[1]).map(h=>h[0]);
-  return ok.length?Math.min(...ok):1.5;}
-function estSev(type,thr,th=DE_TH){ // しきい値αから、Machadoモデル上の重さ(0〜1)を逆算
-  if(thr>=1.4) return 1;
-  if(plateD(type,0,type,thr)<th) return 0;
-  if(plateD(type,1,type,thr)>=th) return 1;
-  let lo=0,hi=1;for(let i=0;i<18;i++){const m=(lo+hi)/2;if(plateD(type,m,type,thr)>=th)lo=m;else hi=m;}
-  return (lo+hi)/2;}
-function personalTh(thr){ // 青黄(T)軸はP/D型でも保たれるので、その人のT軸しきい値を『普通の目の読める下限』の基準にする
-  const v=thr.t>=1.4?DE_TH:plateD('p',0,'t',thr.t);return Math.min(14,Math.max(3,v));}
-function classify(thr,th=DE_TH){
-  const sev={};['p','d','t'].forEach(h=>sev[h]=estSev(h,thr[h],th));
+  return ok.length?Math.min(...ok):70;}
+function classify(thr,leaning){ // thr:{p,d,t} 各軸で読めた最小色差。leaning:分類板の手がかり {p,d}
+  const sev={};['p','d','t'].forEach(h=>sev[h]=estSev(h,thr[h]));
   let best='p';['d','t'].forEach(h=>{if(sev[h]>sev[best]+.05)best=h}); // 同程度ならP型を優先
-  const type=(sev[best]<.3||(best==='t'&&sev.t<.45))?'none':best;
-  const ambiguous=type==='p'||type==='d'?Math.abs(sev.p-sev.d)<.15:false; // PとDの差が小さい＝区別があいまい
-  return {type,sev:sev[best],all:sev,ambiguous};}
+  const ambiguous=(best==='p'||best==='d')&&Math.abs(sev.p-sev.d)<.15;
+  if(ambiguous&&leaning&&leaning.p!==leaning.d) best=leaning.p>leaning.d?'p':'d'; // 分類板の手がかりで決める
+  const tOK=best!=='t'||(sev.t>=.45&&thr.t>=30&&thr.t>=Math.max(thr.p,thr.d)+10); // T型は、はっきりした証拠があるときだけ
+  const type=(sev[best]<.3||!tOK)?'none':best;
+  return {type,sev:sev[best],all:sev,ambiguous,grade:gradeOf(thr[best])};}
+
+/* ===== 高精度変換（Ebelin et al., Eurographics 2023「Luminance-Preserving and Temporally Stable Daltonization」） =====
+ 画素ごとに決まる（時間的に安定）／輝度を保つ／灰色は不変。P型・D型の2色覚モデルを前提に、弱い人は強さで薄める。
+ 手順：①Y(輝度)とCb/Cr ②等輝度面で、2色覚が見える線(dichromacy line)へ射影 ③赤側→黄・緑側→青へ振り分け(F,G,H)
+       ④2色覚の見え方 S(b)=T(c) になる、元の色にいちばん近い色 b を逆算（逆射影） */
+const WY=[.2126,.7152,.0722];
+// 論文の既定(射影の角度60°, 立ち上がり×3)では、混同色の9割が3JND(ΔE6.9)に届かなかった(P10=5.0/4.2)ため、
+// 「9割の混同ペアが3JND以上」かつ「元の色からの変化が最小」を基準に、角度=90°・立ち上がり×1に調整した
+const PHI=90*Math.PI/180,KT=1;
+const lumY=c=>WY[0]*c[0]+WY[1]*c[1]+WY[2]*c[2],dot2=(a,b)=>a[0]*b[0]+a[1]*b[1];
+const toCbCr=(c,Y)=>[(c[2]-Y)/1.8556,(c[0]-Y)/1.5748];
+function fromCbCr(Y,cb,cr){const R=Y+1.5748*cr,B=Y+1.8556*cb;return [R,(Y-WY[0]*R-WY[2]*B)/WY[1],B];}
+const _dg={},_pg={};
+function dichroSetup(type){
+  if(_dg[type]) return _dg[type];
+  const S=MATS[type],cols=[0,1,2].map(j=>[S[0][j],S[1][j],S[2][j]]);
+  let e1=cols[0];const n1=Math.hypot(...e1);e1=e1.map(x=>x/n1);
+  let best=null,bm=0;
+  cols.forEach((c,j)=>{if(!j)return;const d=dot(c,e1),r=c.map((x,i)=>x-d*e1[i]),m=Math.hypot(...r);if(m>bm){bm=m;best=r}});
+  const e2=best.map(x=>x/bm);                                   // 値域(2色覚が見える面)の正規直交基底
+  const A=[e1,e2].map(e=>[0,1,2].map(j=>e[0]*S[0][j]+e[1]*S[1][j]+e[2]*S[2][j])); // S = E·A
+  const M=[[dot(A[0],A[0]),dot(A[0],A[1])],[dot(A[1],A[0]),dot(A[1],A[1])]],det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+  const inv=[[M[1][1]/det,-M[0][1]/det],[-M[1][0]/det,M[0][0]/det]];
+  const l1=lumY(e1),l2=lumY(e2);let u=e1.map((x,i)=>l2*x-l1*e2[i]);const un=Math.hypot(...u);u=u.map(x=>x/un); // 値域内で輝度0の方向
+  let uc=[u[2]/1.8556,u[0]/1.5748];if(uc[0]<0){u=u.map(x=>-x);uc=uc.map(x=>-x);} // 青側を+
+  const um=Math.hypot(...uc),uh=uc.map(x=>x/um);let nh=[-uh[1],uh[0]];
+  const rd=toCbCr([1,0,0],lumY([1,0,0]));if(nh[0]*rd[0]+nh[1]*rd[1]<0) nh=nh.map(x=>-x); // 赤が「上」
+  return _dg[type]={e1,e2,A,inv,u,um,uh,nh};}
+function polyInfo(type,Y){ // 輝度Yの等輝度面と、RGB立方体の断面（多角形）に対する各種の端点
+  const key=type+Math.round(Y*2000);if(_pg[key]) return _pg[key];
+  const g=dichroSetup(type),V=[];
+  for(let m=0;m<8;m++){const a=[m&1,(m>>1)&1,(m>>2)&1];for(let k=0;k<3;k++){if(a[k])continue;const b=a.slice();b[k]=1;
+    const ya=lumY(a),yb=lumY(b);if((ya-Y)*(yb-Y)<=0&&ya!==yb){const t=(Y-ya)/(yb-ya),p=a.map((x,i)=>x+t*(b[i]-x)),q=toCbCr(p,Y);V.push([dot2(q,g.uh),dot2(q,g.nh)]);}}}
+  // 見える線の両端（灰色+t·u が色域に収まる範囲）
+  let tlo=-Infinity,thi=Infinity;for(let k=0;k<3;k++){if(Math.abs(g.u[k])<1e-9)continue;const t1=(0-Y)/g.u[k],t2=(1-Y)/g.u[k];tlo=Math.max(tlo,Math.min(t1,t2));thi=Math.min(thi,Math.max(t1,t2));}
+  const ends=[[tlo*g.um,0],[thi*g.um,0]],cot=1/Math.tan(PHI);
+  const top=[],bot=[];let hT=0,hB=0;
+  V.concat(ends).forEach(([s,h])=>{const P=s-h*cot;if(h>=-1e-12){top.push(P);hT=Math.max(hT,h);}if(h<=1e-12){bot.push(P);hB=Math.max(hB,-h);}});
+  const ptY=Math.min(...top),ptB=Math.max(...top),pbY=Math.min(...bot),pbB=Math.max(...bot);
+  return _pg[key]={yIn:Math.max(ptY,pbY),bIn:Math.min(ptB,pbB),yOut:Math.min(ptY,pbY),bOut:Math.max(ptB,pbB),hT:Math.max(hT,1e-6),hB:Math.max(hB,1e-6),cot};}
+function daltonize(type,c){ // c:線形RGB(0..1) → 変換後の線形RGB（未クランプ）
+  if(type==='t') return projApply('t',1.5,c);   // T型：Machadoの行列が2色覚(階数2)でないため、簡易の投影で代用
+  if(type!=='p'&&type!=='d') return c.slice();
+  const g=dichroSetup(type),Y=Math.min(.9995,Math.max(.0005,lumY(c))),pi=polyInfo(type,Y),q=toCbCr(c,lumY(c));
+  const s=dot2(q,g.uh),h=dot2(q,g.nh),P=s-h*pi.cot;
+  const F=P<0?pi.yIn*P/pi.yOut:pi.bIn*P/pi.bOut,span=pi.bIn-pi.yIn;
+  const top=h>=0,G=top?pi.yIn*(1-(F-pi.yIn)/span):(F-pi.yIn)/span*pi.bIn;
+  const r=top?h/pi.hT:-h/pi.hB,t=Math.min(KT*r,1),H=(1-t)*F+t*G;
+  const Tc=fromCbCr(lumY(c),H*g.uh[0],H*g.uh[1]);                 // 2色覚に見せたい色 T(c)
+  const tau=[dot(g.e1,Tc),dot(g.e2,Tc)],Ac=[dot(g.A[0],c),dot(g.A[1],c)],d=[tau[0]-Ac[0],tau[1]-Ac[1]];
+  const w=[g.inv[0][0]*d[0]+g.inv[0][1]*d[1],g.inv[1][0]*d[0]+g.inv[1][1]*d[1]];
+  return c.map((x,i)=>x+g.A[0][i]*w[0]+g.A[1][i]*w[1]);}          // 逆射影 b = c + Aᵀ(AAᵀ)⁻¹(τ−Ac)
+const LUTN=33;
+function buildLUT(type){ // 入力・出力ともsRGB(0..255)。画素ごとの写像なので、フレーム間でチラつかない
+  const N=LUTN,out=new Uint8Array(N*N*N*4);
+  for(let bl=0;bl<N;bl++)for(let gr=0;gr<N;gr++)for(let rd=0;rd<N;rd++){
+    const c=[rd,gr,bl].map(i=>toLinJ(255*i/(N-1))),b=daltonize(type,c),o=((gr*N*N)+(bl*N+rd))*4; // 行=G、列=B*N+R
+    out[o]=toSrgb8(b[0]);out[o+1]=toSrgb8(b[1]);out[o+2]=toSrgb8(b[2]);out[o+3]=255;}
+  return out;}
+function autoStrength(type,sev){ // 3JND(ΔE6.9)以上に分かれる色の組が9割になる、最小の強さ
+  if(type==='t') return 1;
+  if(type!=='p'&&type!=='d') return 0;
+  const M=cvdM(type,sev),P=samplePairs(type),B=P.map(([x,y])=>[daltonize(type,x),daltonize(type,y)]);
+  for(let k=0;k<=1.501;k+=.05){
+    const v=P.map(([x,y],i)=>{const [bx,by]=B[i],f=(c,b)=>clamp01(c.map((z,j)=>z+k*(b[j]-z)));return dE(mv(M,f(x,bx)),mv(M,f(y,by)));});
+    if(p10(v)>=6.9) return +k.toFixed(2);}
+  return 1.5;}
+
+/* ===== 調整テスト：変換をかけた板を実際に読んでもらい、その人に必要な強さを決める（閉ループ） ===== */
+const KL=[.35,.5,.65,.8,1,1.25,1.5];
+function tuneLevel(thr){ // 元の色では読めない色差（しきい値のすぐ下）。10〜30
+  let lv=LADDER[0];for(const L of LADDER) if(L<thr) lv=L;return Math.min(30,Math.max(10,lv));}
+function tuneAtten(obs,s,axis,T,type,k){ // 変換後の板が、観測者にどれだけの色差に見えるか
+  const M=cvdM(obs,s),{rows}=tTable(axis,T);let sum=0,n=0;
+  rows.forEach((r,i)=>[1,-1].forEach(sg=>{const sc=symColor(axis,T,i,sg),b=daltonize(type,sc),f=sc.map((z,j)=>z+k*(b[j]-z)).map(v=>Math.min(1,Math.max(0,v)));
+    sum+=dE(mv(M,f),mv(M,r.a));n++;}));return sum/n;}
+function newTune(k0,type,T){let i=KL.findIndex(k=>k>=k0-1e-9);if(i<0)i=KL.length-1;return {i,run:0,n:0,max:8,done:false,fail:false,top:0,type,T};}
+function tuneUpdate(u,ok){u.n++;
+  if(ok){u.run++;if(u.run>=2)u.done=true;}
+  else{u.run=0;if(u.i>=KL.length-1){u.top++;if(u.top>=2){u.done=true;u.fail=true;}}else u.i++;}
+  if(u.n>=u.max&&!u.done){u.done=true;u.fail=true;}}
+function planSettings(type,sev,thrAxis,k){ // テスト結果から決める自動設定の一式
+  const s=Math.max(.1,Math.round(sev*20)/20);
+  return {type,sev:s,proc:1,beta:k,ang:autoAngle(type,s),hr:Math.max(10,Math.min(40,Math.round(thrAxis>=65?30:thrAxis)))};}
 
 </script>
 <script>
@@ -219,9 +364,10 @@ video.playsInline=true;video.muted=true;video.setAttribute('playsinline','');
 const cv=$('view'),gl=cv.getContext('webgl',{antialias:false,preserveDrawingBuffer:false});
 
 const VS=`attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-const FS=`precision highp float;varying vec2 uv;uniform sampler2D tex;
-uniform mat3 M;uniform mat3 R;uniform vec3 nt;uniform vec3 uu;uniform vec3 tl;
-uniform float proc,sim,beta,hr;
+const FS=`precision highp float;varying vec2 uv;uniform sampler2D tex;uniform sampler2D lut;
+uniform mat3 M;uniform mat3 R;uniform vec3 tl;
+uniform float proc,sim,beta,hr,split;
+const float LN=33.;
 vec3 toLin(vec3 c){return mix(c/12.92,pow((c+.055)/1.055,vec3(2.4)),step(.04045,c));}
 vec3 toSrgb(vec3 c){c=clamp(c,0.,1.);return mix(c*12.92,1.055*pow(c,vec3(1./2.4))-.055,step(.0031308,c));}
 vec3 lab(vec3 c){
@@ -229,18 +375,27 @@ vec3 lab(vec3 c){
   x=max(x/vec3(.95047,1.,1.08883),0.);
   vec3 f=mix((24389./27.*x+16.)/116.,pow(x,vec3(1./3.)),step(216./24389.,x));
   return vec3(116.*f.y-16.,500.*(f.x-f.y),200.*(f.y-f.z));}
+vec3 lutSample(vec3 s){                       // 33^3 の3D-LUT（2Dに並べたもの）を三線形補間
+  vec3 c=clamp(s,0.,1.)*(LN-1.);float b0=floor(c.b),b1=min(b0+1.,LN-1.),fb=c.b-b0;
+  vec2 u0=vec2((b0*LN+c.r+.5)/(LN*LN),(c.g+.5)/LN),u1=vec2((b1*LN+c.r+.5)/(LN*LN),(c.g+.5)/LN);
+  return mix(texture2D(lut,u0).rgb,texture2D(lut,u1).rgb,fb);}
 void main(){
-  vec3 lin=toLin(texture2D(tex,uv).rgb); vec3 o=lin;
-  if(proc>.5&&proc<1.5){ o=clamp(lin+beta*dot(nt,lin)*uu,0.,1.); }          // 赤緑→青黄の投影
-  else if(proc>1.5&&proc<2.5){ o=clamp(R*lin,0.,1.); }                      // 色相回転
-  else if(proc>2.5&&tl.x>=0.){                                              // ハイライト
-    float w=1.-smoothstep(hr*.6,hr,distance(lab(lin),tl));
-    float y=dot(lin,vec3(.2126,.7152,.0722));
-    vec3 dim=mix(vec3(y),lin,.25)*.45;
-    float s=step(.5,fract((gl_FragCoord.x+gl_FragCoord.y)/20.));
-    o=mix(dim,mix(lin,vec3(1.),.5*s),w); }
-  if(sim>.5) o=M*o;                                                         // そのタイプの見え方
-  gl_FragColor=vec4(toSrgb(o),1.);
+  vec3 srgb=texture2D(tex,uv).rgb;vec3 lin=toLin(srgb);vec3 o=lin;
+  bool left=(split>=0.&&uv.x<split);          // 左右比較：左＝元の映像
+  if(!left){
+    if(proc>.5&&proc<1.5){ o=clamp(lin+beta*(toLin(lutSample(srgb))-lin),0.,1.); }   // 高精度変換（輝度保存・画素ごと）
+    else if(proc>1.5&&proc<2.5){ o=clamp(R*lin,0.,1.); }                           // 色相回転（Zhu）
+    else if(proc>2.5&&tl.x>=0.){                                                   // ハイライト
+      float w=1.-smoothstep(hr*.6,hr,distance(lab(lin),tl));
+      float y=dot(lin,vec3(.2126,.7152,.0722));
+      vec3 dim=mix(vec3(y),lin,.25)*.45;
+      float s=step(.5,fract((gl_FragCoord.x+gl_FragCoord.y)/20.));
+      o=mix(dim,mix(lin,vec3(1.),.5*s),w); }
+  }
+  if(sim>.5) o=M*o;                                                                // そのタイプの見え方
+  vec3 outc=toSrgb(o);
+  if(split>=0.&&abs(uv.x-split)<.003) outc=vec3(1.);
+  gl_FragColor=vec4(outc,1.);
 }`;
 function sh(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x}
 const prog=gl.createProgram();
@@ -253,9 +408,23 @@ const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
 [[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE],[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR]]
   .forEach(([a,b])=>gl.texParameteri(gl.TEXTURE_2D,a,b));
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+const lutTex=gl.createTexture();gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,lutTex);
+[[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE],[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR]]
+  .forEach(([a,b])=>gl.texParameteri(gl.TEXTURE_2D,a,b));
+gl.activeTexture(gl.TEXTURE0);
 const U=n=>gl.getUniformLocation(prog,n);
+const luts={};
+function ensureLUT(type){ // タイプごとに1回だけ作る（画素ごとの写像なので、映像が動いてもチラつかない）
+  if(st.lutType===type) return;
+  if(!luts[type]) luts[type]=buildLUT(type);
+  gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,lutTex);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,LUTN*LUTN,LUTN,0,gl.RGBA,gl.UNSIGNED_BYTE,luts[type]);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex);
+  st.lutType=type;}
 
-const st={chart:false,type:'p',sev:1,proc:0,sim:false,beta:1,ang:0,hr:20,target:null,lastRGB:null,
+const st={chart:false,type:'p',sev:1,proc:0,sim:false,cmp:false,split:.5,lutType:null,beta:1,ang:0,hr:20,target:null,lastRGB:null,
   frozen:false,facing:'environment',pt:{x:.5,y:.5},ready:false,pairs:[]};
 const frozenCv=document.createElement('canvas'),fctx=frozenCv.getContext('2d',{willReadFrequently:true});
 const sampCv=document.createElement('canvas');sampCv.width=sampCv.height=1;
@@ -272,13 +441,15 @@ function hideUI(){document.body.classList.remove('ui');clearTimeout(uiTimer);}
 $('panel').addEventListener('pointerdown',showUI);
 $('panel').addEventListener('input',showUI);
 
+const TYPE_L={p:'P型',d:'D型',t:'T型',a:'全色盲'},PROC_L=['そのまま','高精度変換','色ずらし','ハイライト'];
 function syncUI(){
-  $('ty_'+st.type).checked=true;$('pr'+st.proc).checked=true;$('simChk').checked=st.sim;
+  $('ty_'+st.type).checked=true;$('pr'+st.proc).checked=true;$('simChk').checked=st.sim;$('cmpChk').checked=st.cmp;
   $('sev').value=Math.round(st.sev*100);$('sevV').textContent=Math.round(st.sev*100)+'%';
   $('beta').value=Math.round(st.beta*100);$('betaV').textContent=Math.round(st.beta*100)+'%';
   $('ang').value=Math.round(st.ang);$('angV').textContent=Math.round(st.ang)+'°';
   $('hr').value=st.hr;$('hrV').textContent='ΔE'+st.hr;
   document.querySelectorAll('.ctx').forEach(e=>e.style.display=(+e.dataset.m===st.proc)?'':'none');
+  $('status').textContent=`${TYPE_L[st.type]} ・ ${PROC_L[st.proc]}${st.proc===1?' '+Math.round(st.beta*100)+'%':st.proc===2?' '+Math.round(st.ang)+'°':''}${st.sim?' ・見え方で確認':''}${st.cmp?' ・比較':''}`;
 }
 
 /* ---------- テスト画像（選んだタイプで本当に混同する色の組を計算で作る） ---------- */
@@ -298,29 +469,32 @@ function verifyText(){
   let s='色の差(CIELAB ΔE)。約7以上で見分けやすい。✓＝見分けやすい\n';
   st.pairs.forEach((p,i)=>{
     const n=dE(p.a,p.b),s0=dE(mv(M,p.a),mv(M,p.b));
-    const sp=dE(mv(M,projApply(st.type,st.beta,p.a)),mv(M,projApply(st.type,st.beta,p.b)));
+    const fx=c=>{const b=daltonize(st.type,c);return clamp01(c.map((z,j)=>z+st.beta*(b[j]-z)));};
+    const sp=dE(mv(M,fx(p.a)),mv(M,fx(p.b)));
     const sr=dE(mv(M,clamp01(mv(R,p.a))),mv(M,clamp01(mv(R,p.b))));
-    s+=`${'①②③④⑤⑥'[i]} 普通${n.toFixed(0)}｜そのまま${s0.toFixed(1)}｜投影${sp.toFixed(1)}${sp>=6.9?'✓':''}｜回転${sr.toFixed(1)}${sr>=6.9?'✓':''}\n`;});
+    s+=`${'①②③④⑤⑥'[i]} 普通${n.toFixed(0)}｜そのまま${s0.toFixed(1)}｜高精度${sp.toFixed(1)}${sp>=6.9?'✓':''}｜回転${sr.toFixed(1)}${sr>=6.9?'✓':''}\n`;});
   return s;
 }
 
 /* ---------- 表示更新 ---------- */
 function refreshNote(){
-  const n=$('note');let t='';
-  if(st.type==='a'&&(st.proc===1||st.proc===2)) t+='全色盲は色の情報そのものがないため、この変換では区別できません。色名表示を使ってください。\n';
-  else if(st.proc===1) t+='赤と緑の方向の違いを、青〜黄の違いに写しています。強さで調整できます。\n';
-  else if(st.proc===2) t+='画面を左右になぞると色がずれます（0°で元の色）。\n';
-  else if(st.proc===3) t+='タップした色に近い所に縞模様を付け、ほかは暗くします。UIを消してから、調べたい色をタップしてください。\n';
-  else if(st.sim) t+='選んだタイプの見え方の近似です。\n';
-  if(st.sim&&st.proc>0) t+='（見え方の近似で確認中）\n';
-  if(st.chart) t+=verifyText();
+  const d=$('modeDesc'),n=$('note');let desc='',t='';
+  if(st.type==='a'&&(st.proc===1||st.proc===2)) desc='全色盲は色の情報そのものがないため、この変換では区別できません。色名表示を使ってください。';
+  else if(st.proc===0) desc='元の映像です。「その人の見え方で確認」で、選んだタイプの見え方を近似表示します。';
+  else if(st.proc===1) desc='赤と緑の違いを、青〜黄の違いに写します。明るさと灰色は変えません（Ebelinら 2023）。';
+  else if(st.proc===2) desc='画面を左右になぞると色がずれます（0°で元の色）。Zhuら 2024 の方式です。';
+  else desc='UIを消してから、調べたい色をタップ。近い色に縞模様が付き、ほかは暗くなります。';
+  if(st.cmp) desc+=(desc?' ':'')+'画面を左右になぞると、境界を動かせます。';
+  d.textContent=desc;
+  if(st.chart) t=verifyText();
   n.style.display=t?'block':'none';n.textContent=t.trim();
 }
 function updateUniforms(){
   const to=m=>{const o=new Float32Array(9);for(let r=0;r<3;r++)for(let c=0;c<3;c++)o[c*3+r]=m[r][c];return o};
   gl.uniformMatrix3fv(U('M'),false,to(cvdM(st.type,st.sev)));
   gl.uniformMatrix3fv(U('R'),false,to(rotM(st.ang)));
-  const pp=projParams(st.type);gl.uniform3fv(U('nt'),pp.nt);gl.uniform3fv(U('uu'),pp.u);
+  if(st.proc===1) ensureLUT(st.type);
+  gl.uniform1i(U('tex'),0);gl.uniform1i(U('lut'),1);gl.uniform1f(U('split'),st.cmp?st.split:-1);
   gl.uniform1f(U('proc'),st.proc);gl.uniform1f(U('sim'),st.sim?1:0);gl.uniform1f(U('beta'),st.beta);gl.uniform1f(U('hr'),st.hr);
   gl.uniform3fv(U('tl'),st.target?lab(st.target):[-1,0,0]);
   refreshNote();
@@ -353,7 +527,8 @@ stage.addEventListener('pointermove',e=>{
   if(!drag) return;
   const dx=e.clientX-drag.x;
   if(!drag.moved&&Math.abs(dx)>8) drag.moved=true;
-  if(drag.moved&&st.proc===2){setAng(((drag.a0+dx*.4)%360+360)%360);showUI();}
+  if(drag.moved&&st.cmp&&st.proc!==2){const r=cv.getBoundingClientRect(),c=contentRect();st.split=Math.min(.98,Math.max(.02,(e.clientX-r.left-c.x)/c.w));updateUniforms();showUI();}
+  else if(drag.moved&&st.proc===2){setAng(((drag.a0+dx*.4)%360+360)%360);showUI();}
 });
 stage.addEventListener('pointerup',e=>{
   if(!drag) return;const d=drag;drag=null;
@@ -415,7 +590,7 @@ async function startCam(){
     cv.width=Math.round(video.videoWidth*sc);cv.height=Math.round(video.videoHeight*sc);
     frozenCv.width=cv.width;frozenCv.height=cv.height;
     gl.viewport(0,0,cv.width,cv.height);
-    st.ready=true;st.frozen=false;st.chart=false;$('freeze').textContent='一時停止';
+    st.ready=true;st.frozen=false;st.chart=false;$('freezeL').textContent='一時停止';
     $('start').style.display='none';updateUniforms();placeMark();showUI();
   }catch(e){
     $('start').style.display='flex';
@@ -427,89 +602,191 @@ function showChart(){
   gl.bindTexture(gl.TEXTURE_2D,tex);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,frozenCv);
   st.chart=true;st.frozen=true;st.ready=true;st.pt={x:.5,y:.5};
-  $('freeze').textContent='一時停止';$('start').style.display='none';
+  $('freezeL').textContent='一時停止';$('start').style.display='none';
   updateUniforms();placeMark();sample();showUI();
 }
 const refresh=()=>st.chart?showChart():updateUniforms();
 
-/* ---------- 数字テスト ---------- */
-const T={ax:null,cur:null,prev:0,lastAxis:null,res:null};
+/* ---------- 数字テスト（実在の検査表の構成：デモ→空白→スクリーニング→分類→程度判定→調整） ---------- */
+const T={ax:null,cur:null,queue:[],phase:'',log:null,res:null,ans:'',more:false,tErr:0,last:null,tune:null};
 const NAME={p:'P型（1型・赤が弱い）',d:'D型（2型・緑が弱い）',t:'T型（3型・青が弱い）'};
-function drawPlate({axis,alpha,digit}){
-  const c=$('plate'),x=c.getContext('2d'),S=c.width,R=S/2-4;
-  x.fillStyle='rgb(188,188,188)';x.fillRect(0,0,S,S);
-  const m=document.createElement('canvas');m.width=m.height=S;const mx=m.getContext('2d');
-  mx.fillStyle='#000';mx.font=`bold ${Math.round(S*.78)}px "Arial Black",Arial,sans-serif`;mx.textAlign='center';mx.textBaseline='middle';
-  mx.fillText(String(digit),S/2,S/2+S*.03);
-  const md=mx.getImageData(0,0,S,S).data,dots=[],rmin=S*.011,rmax=S*.024;
-  for(let t=0;t<9000&&dots.length<1100;t++){
-    const r=rmin+Math.random()*(rmax-rmin),px=Math.random()*S,py=Math.random()*S;
+const GR={mild:'弱い',medium:'中程度',strong:'強い',none:'ほぼ普通'};
+const POOL=['2','3','5','6','8','9'];                 // 読み間違えにくい、丸みのある数字（KAMSも丸い数字を使用）
+const rnd=n=>Math.floor(Math.random()*n);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function randNum(nd){let s='';for(let i=0;i<nd;i++){let d;do{d=POOL[rnd(POOL.length)]}while(s.includes(d));s+=d;}return s;}
+const makeScreening=()=>shuffle(['p','p','d','d','t','t']).map(a=>({kind:'vanish',axis:a,T:SCREEN_DE,text:randNum(Math.random()<.35?1:2)}));
+const makeClass=()=>[0,1,2].map(()=>{const L=randNum(1);let R;do{R=randNum(1)}while(R===L);return {kind:'class',T:CLASS_DE,left:L,right:R,text:L+R};});
+
+function drawPlate(spec){
+  /* 板の作り：小さなドット（3種類の大きさ）を密に敷き詰める／明るさは『明るい・暗い』の2段階だけ／
+     シンボルのドットは、混同線上の色（灰色と区別がつかない色）。赤っぽい・緑っぽいの両方を使う（KAMS, Birch 1993） */
+  const c=$('plate'),x=c.getContext('2d'),S=c.width,R=S/2-4,bg=toSrgb8(.28);
+  x.fillStyle=`rgb(${bg},${bg},${bg})`;x.fillRect(0,0,S,S);
+  const maskOf=(txt,cx,size)=>{const m=document.createElement('canvas');m.width=m.height=S;const g=m.getContext('2d');
+    g.fillStyle=g.strokeStyle='#000';g.lineWidth=S*(txt.length>1?.008:.018);g.lineJoin='round'; // 輪郭を少しだけ太らせる（数字の穴をつぶさない）
+    g.font=`bold ${Math.round(size)}px Arial,"Helvetica Neue",Helvetica,sans-serif`;g.textAlign='center';g.textBaseline='middle';
+    g.strokeText(txt,cx,S/2+S*.03);g.fillText(txt,cx,S/2+S*.03);return g.getImageData(0,0,S,S).data;};
+  let masks=[];
+  if(spec.kind==='class') masks=[maskOf(spec.left,S*.31,S*.56),maskOf(spec.right,S*.69,S*.56)];
+  else if(spec.text) masks=[maskOf(spec.text,S/2,spec.text.length>1?S*.56:S*.78)];
+  const inM=(i,px,py)=>masks[i]&&masks[i][(Math.round(py)*S+Math.round(px))*4+3]>128;
+  const rs=[.0065,.0095,.013].map(v=>v*S),cell=S*.03,Gd={},dots=[];
+  for(let t=0;t<40000&&dots.length<4500;t++){
+    const r=rs[rnd(3)],px=Math.random()*S,py=Math.random()*S;
     if(Math.hypot(px-S/2,py-S/2)>R-r) continue;
-    let ok=true;for(const q of dots){if(Math.hypot(px-q[0],py-q[1])<r+q[2]+1.2){ok=false;break}}
-    if(ok) dots.push([px,py,r]);}
-  const n=nullDir(axis),levels=[.70,.82,.94,1.06,1.18,1.30]; // 明るさのノイズ：明るさでは数字が分からないようにする
+    const gx=Math.floor(px/cell),gy=Math.floor(py/cell);let ok=true;
+    for(let ix=gx-1;ix<=gx+1&&ok;ix++)for(let iy=gy-1;iy<=gy+1&&ok;iy++){const L=Gd[ix+','+iy];if(L)for(const q of L){if(Math.hypot(px-q[0],py-q[1])<r+q[2]+.8){ok=false;break}}}
+    if(ok){dots.push([px,py,r]);(Gd[gx+','+gy]||(Gd[gx+','+gy]=[])).push([px,py,r]);}}
+  const conv=spec.conv,memo={};
+  const cvt=col=>{if(!conv) return col;const b=daltonize(conv.type,col);return clamp01(col.map((z,j)=>z+conv.k*(b[j]-z)));};
   for(const [px,py,r] of dots){
-    const inD=md[(Math.round(py)*S+Math.round(px))*4+3]>100;
-    const a=BASES_L[Math.floor(Math.random()*BASES_L.length)],[lo,hi]=pairAt(a,n,alpha),col=inD?hi:lo,lv=levels[Math.floor(Math.random()*6)];
-    x.fillStyle=`rgb(${col.map(v=>toSrgb8(v*lv)).join(',')})`;
+    const m0=inM(0,px,py),m1=inM(1,px,py),inside=m0||m1;
+    const idx=inside?(Math.random()<.57?1:0):rnd(YL.length),sign=Math.random()<.5?1:-1;   // シンボルは明るいドットが57%
+    let col=[YL[idx],YL[idx],YL[idx]];
+    if(spec.kind==='demo'){const g=m0?[.42,.52,.62][rnd(3)]:[.10,.14,.18][rnd(3)];col=[g,g,g];}  // デモ板：明るさの差（誰でも読める）
+    else if(spec.kind==='class'){if(m0)col=symColor('p',spec.T,idx,sign);else if(m1)col=symColor('d',spec.T,idx,sign);}
+    else if(m0) col=symColor(spec.axis,spec.T,idx,sign);
+    if(conv&&inside){const key=idx+'|'+sign;col=memo[key]||(memo[key]=cvt(col));}               // 調整板：変換をかけた色で描く
+    x.fillStyle=`rgb(${col.map(toSrgb8).join(',')})`;
     x.beginPath();x.arc(px,py,r,0,7);x.fill();}
 }
-function nextPlate(){
-  const open=['p','d','t'].filter(k=>!T.ax[k].done);
-  if(!open.length) return testFinish();
-  let cand=open.filter(k=>k!==T.lastAxis);if(!cand.length)cand=open;
+function showAns(){$('tAns').textContent=T.ans||'—';}
+function progText(c){
+  const L=T.log;
+  if(c.kind==='demo') return 'デモ板（採点なし）';
+  if(c.kind==='blank') return '板 2';
+  if(c.kind==='vanish') return `スクリーニング ${L.screen.length+1}/6`;
+  if(c.kind==='class') return `分類 ${L.cls.length+1}/3`;
+  if(c.kind==='tune') return `調整テスト ${T.tune.n+1}枚目（最大${T.tune.max}枚）`;
+  return `程度の判定 ${Object.values(T.ax).reduce((s,a)=>s+a.n,0)+1}問目`;}
+function initStair(){
+  T.ax={p:newAxis(10),d:newAxis(10),t:newAxis(6)};
+  if(!T.tErr){T.ax.t.done=true;T.ax.t.floor=true;} // T軸は、スクリーニングで間違えた人だけ調べる
+  T.last=null;}
+function nextStair(){
+  const open=['p','d','t'].filter(k=>!T.ax[k].done);if(!open.length) return null;
+  let cand=open.filter(k=>k!==T.last);if(!cand.length)cand=open;
   const pool=[];cand.forEach(k=>{for(let i=0;i<(k==='t'?1:2);i++)pool.push(k)});
-  const axis=pool[Math.floor(Math.random()*pool.length)];
-  let dg;do{dg=1+Math.floor(Math.random()*9)}while(dg===T.prev);
-  T.prev=dg;T.lastAxis=axis;T.cur={axis,alpha:T.ax[axis].a,digit:dg};
-  drawPlate(T.cur);
-  $('tProg').textContent=(Object.values(T.ax).reduce((s,a)=>s+a.n,0)+1)+' 問目（20〜30問ほど）';
-}
-function answer(d){if(!T.cur)return;stairUpdate(T.ax[T.cur.axis],d===T.cur.digit);nextPlate();}
-function testOpen(){
-  hideUI();$('test').style.display='flex';$('tRes').style.display='none';$('tQ').style.display='flex';
-  T.ax={p:newAxis(12),d:newAxis(12),t:newAxis(8)};T.lastAxis=null;T.prev=0;nextPlate();}
+  const axis=pool[rnd(pool.length)];T.last=axis;
+  return {kind:'stair',axis,T:axT(T.ax[axis]),text:randNum(1)};}
+function nextPlate(){
+  $('tTitle').textContent='円の中の数字を入力してください。見えなければ「見えない」。';
+  if(T.phase==='tune'){
+    if(T.tune.done) return tuneFinish();
+    T.cur={kind:'tune',axis:T.tune.type,T:T.tune.T,text:randNum(1),conv:{type:T.tune.type,k:KL[T.tune.i]}};
+    $('tTitle').textContent='この板には、変換がかかっています。数字を入力してください。';
+    drawPlate(T.cur);T.ans='';showAns();$('tProg').textContent=progText(T.cur);return;}
+  if(!T.queue.length){
+    if(T.phase==='screen') return afterScreening();
+    if(T.phase==='class'){T.phase='stair';initStair();}
+  }
+  if(T.queue.length) T.cur=T.queue.shift();
+  else{const sp=nextStair();if(!sp) return testFinish();T.cur=sp;}
+  drawPlate(T.cur);T.ans='';showAns();$('tProg').textContent=progText(T.cur);}
+function afterScreening(){
+  const sc=T.log.screen,errs=sc.filter(x=>!x.ok).length;
+  T.tErr=sc.filter(x=>x.axis==='t'&&!x.ok).length;
+  if(errs<=1&&!T.more){T.phase='done';return testFinish();} // HRRと同じ：スクリーニングを通れば終了
+  T.phase='class';T.queue=makeClass();nextPlate();}
+function submit(){
+  const c=T.cur;if(!c) return;const a=T.ans,L=T.log;
+  if(c.kind==='demo') L.demo=(a===c.text);
+  else if(c.kind==='blank') L.blank=(a==='');
+  else if(c.kind==='vanish') L.screen.push({axis:c.axis,ok:a===c.text});
+  else if(c.kind==='class'){ // 右の数字だけ＝P型の手がかり／左だけ＝D型の手がかり（Ishihara分類板と同じ考え方）
+    L.cls.push(a===c.text?'both':a===c.right?'p':a===c.left?'d':a===''?'none':'other');}
+  else if(c.kind==='tune') tuneUpdate(T.tune,a===c.text);
+  else stairUpdate(T.ax[c.axis],a===c.text);
+  nextPlate();}
+function press(d){
+  if(!T.cur) return;
+  if(T.ans.length>=2) return;
+  T.ans+=d;showAns();
+  if(T.ans.length===T.cur.text.length&&T.cur.kind!=='blank') submit();}
+function testOpen(more){
+  hideUI();T.more=!!more;
+  $('test').style.display='flex';$('tRes').style.display='none';$('tQ').style.display='flex';
+  T.log={demo:null,blank:null,screen:[],cls:[]};T.res=null;T.tune=null;
+  T.phase='screen';T.queue=[{kind:'demo',text:'12'},{kind:'blank',text:''},...makeScreening()];nextPlate();}
 function testClose(){$('test').style.display='none';T.cur=null;}
 function testFinish(){
-  const thr={p:thrOf(T.ax.p),d:thrOf(T.ax.d),t:thrOf(T.ax.t)},th=personalTh(thr),r=classify(thr,th);
-  T.res={thr,r,th};
-  const word=v=>v<.45?'弱い':v<.75?'中程度':'強い',fmt=v=>v>=1.4?'読めず':v.toFixed(2);
-  let t=r.type==='none'?'はっきりした偏りは見つかりませんでした。補正は、ほとんど必要ないかもしれません。'
-    :`${NAME[r.type]}の傾向 ／ 程度：${word(r.sev)}（目安 ${Math.round(r.sev*100)}%）`+(r.ambiguous?'\nP型とD型の区別はあいまいです（軽度では見分けにくいです）。気になる場合は、タイプを手動で切り替えてください。':'');
-  t+=`\n\nしきい値（小さいほど細かい差が読めた）\nP軸 ${fmt(thr.p)} ／ D軸 ${fmt(thr.d)} ／ T軸 ${fmt(thr.t)}`;
-  t+='\n\n※医療の診断ではありません。画面の明るさ・色設定・部屋の明るさで結果が変わります。気になる場合は眼科で検査を受けてください。';
-  $('tResTxt').textContent=t;$('tQ').style.display='none';$('tRes').style.display='flex';
-  $('tApply').style.display=r.type==='none'?'none':'';
-}
-for(let i=1;i<=9;i++){const b=document.createElement('button');b.textContent=i;b.onclick=()=>answer(i);$('pad').appendChild(b);}
-$('tNone').onclick=()=>answer(0);
-$('tCancel').onclick=testClose;$('tClose').onclick=testClose;$('tAgain').onclick=testOpen;
-$('tApply').onclick=()=>{
-  const r=T.res.r;
-  if(r.type!=='none'){
-    st.type=r.type;st.sev=Math.max(.1,Math.round(r.sev*20)/20);st.proc=1;
-    st.beta=autoBeta(st.type,st.sev);st.ang=autoAngle(st.type,st.sev);
-    if(!st.beta) st.beta=.5; // 弱い人でも、変化が分かる最低限の強さ
+  const L=T.log,errs=L.screen.filter(x=>!x.ok).length,lines=[];
+  lines.push(`デモ板：${L.demo===null?'―':L.demo?'読めた':'読めなかった（画面や視力を確認してください）'}`);
+  lines.push(`スクリーニング：${6-errs}/6 正解 → ${errs<=1?'通過':'要詳細'}（誤答1枚以内で通過）`);
+  if(L.blank===false) lines.push('※何もない板に数字を答えました（当てずっぽうの可能性）');
+  if(T.phase==='done'){T.res={passed:true,lines};}
+  else{
+    const cnt={p:0,d:0,both:0,none:0,other:0};L.cls.forEach(h=>cnt[h]++);
+    const thr={p:thrOf(T.ax.p),d:thrOf(T.ax.d),t:thrOf(T.ax.t)},r=classify(thr,{p:cnt.p,d:cnt.d}),fmt=v=>v>=65?'読めず':'ΔE'+v;
+    lines.push(`分類板：P型の手がかり ${cnt.p}枚／D型の手がかり ${cnt.d}枚／両方読めた ${cnt.both}枚／読めず ${cnt.none+cnt.other}枚`);
+    lines.push(`程度判定（読めた最小の色差。小さいほど細かい差が読めた）：P軸 ${fmt(thr.p)}／D軸 ${fmt(thr.d)}${T.tErr?'／T軸 '+fmt(thr.t):''}`);
+    T.res={passed:false,thr,r,lines,k:null,tuned:false};}
+  renderResult();}
+function renderResult(){
+  const R=T.res;let t=R.lines.join('\n');
+  ['tApply','tAlt','tMore','tTune'].forEach(i=>$(i).style.display='none');
+  if(R.passed){
+    t+='\n\nスクリーニングを通過しました。この検査で見つかる範囲では、色覚はほぼ普通です。\nただし、弱い色覚異常は通ってしまうことがあります（実際のスクリーニング検査も同じです）。';
+    $('tMore').style.display='';
+  }else{
+    const r=R.r;
+    if(r.type==='none') t+='\n\n偏りははっきりしませんでした。画面や部屋の明るさで結果が変わります。場所を変えて、もう一度試すこともできます。';
+    else{
+      const k=R.k!=null?R.k:(autoStrength(r.type,r.sev)||.5),pl=planSettings(r.type,r.sev,R.thr[r.type],k);
+      t+=`\n\n${NAME[r.type]}の傾向 ／ 程度：${GR[r.grade]}（目安 ${Math.round(r.sev*100)}%）\n目安の帯：弱 ΔE15–22／中 30–40／強 50–60（Birch 1993）`;
+      if(r.ambiguous&&(r.type==='p'||r.type==='d')){
+        const o=r.type==='p'?'d':'p';t+=`\nP型とD型の区別があいまいです。下のボタンで、${NAME[o].slice(0,2)}でも使えます。`;
+        $('tAlt').textContent=NAME[o].slice(0,2)+'で使う';$('tAlt').style.display='';$('tAlt').dataset.type=o;}
+      t+=`\n\n【自動設定】\n・タイプ ${NAME[pl.type].slice(0,2)}／程度 ${Math.round(pl.sev*100)}%\n・表示 高精度変換 強さ ${Math.round(pl.beta*100)}%${R.tuned?'（調整テストで確認済み）':'（モデルからの推定）'}\n・色ずらしの角度 ${pl.ang}°\n・ハイライトの色の範囲 ΔE${pl.hr}`;
+      $('tApply').style.display='';
+      if((r.type==='p'||r.type==='d')&&!R.tuned&&!R.tuneFail) $('tTune').style.display='';
+    }
   }
-  testClose();syncUI();updateUniforms();save();showUI();};
+  t+='\n\n※医療の診断ではありません。画面の明るさ・色設定・部屋の明るさで結果が変わります。気になる場合は眼科で検査を受けてください。';
+  $('tResTxt').textContent=t;$('tQ').style.display='none';$('tRes').style.display='flex';}
+function startTune(){ // 変換をかけた板を読んでもらい、その人に必要な強さを決める
+  const R=T.res,r=R.r;if(!r||(r.type!=='p'&&r.type!=='d')) return;
+  T.phase='tune';T.queue=[];T.tune=newTune(autoStrength(r.type,r.sev)||.5,r.type,tuneLevel(R.thr[r.type]));
+  $('tRes').style.display='none';$('tQ').style.display='flex';nextPlate();}
+function tuneFinish(){
+  const u=T.tune,R=T.res;T.phase='done';
+  R.k=u.fail?1.5:KL[u.i];R.tuned=!u.fail;R.tuneFail=u.fail;
+  R.lines.push(u.fail?'調整テスト：強さ150%でも読めませんでした。ハイライトや色名表示の併用をおすすめします。':`調整テスト：変換をかけた板が、強さ${Math.round(KL[u.i]*100)}%で読めました。`);
+  renderResult();}
+function applyPlan(type){
+  const R=T.res,r=R.r,sev=r.all[type],k=(type===r.type&&R.k!=null)?R.k:(autoStrength(type,sev)||.5),p=planSettings(type,sev,R.thr[type],k);
+  Object.assign(st,{type:p.type,sev:p.sev,proc:1,beta:p.beta,ang:p.ang,hr:p.hr,cmp:false,sim:false});
+  testClose();syncUI();updateUniforms();save();showUI();}
+for(const d of ['1','2','3','4','5','6','7','8','9']){const b=document.createElement('button');b.textContent=d;b.onclick=()=>press(d);$('pad').appendChild(b);}
+{const b=document.createElement('button');b.textContent='消す';b.style.fontSize='14px';b.onclick=()=>{T.ans=T.ans.slice(0,-1);showAns();};$('pad').appendChild(b);}
+{const b=document.createElement('button');b.textContent='0';b.onclick=()=>press('0');$('pad').appendChild(b);}
+{const b=document.createElement('button');b.textContent='決定';b.style.fontSize='14px';b.onclick=submit;$('pad').appendChild(b);}
+$('tNone').onclick=()=>{T.ans='';showAns();submit();};
+$('tCancel').onclick=testClose;$('tClose').onclick=testClose;$('tAgain').onclick=()=>testOpen(false);
+$('tMore').onclick=()=>{T.more=true;$('tRes').style.display='none';$('tQ').style.display='flex';T.phase='class';T.queue=makeClass();T.log.cls=[];nextPlate();};
+$('tTune').onclick=startTune;
+$('tApply').onclick=()=>{if(T.res&&T.res.r)applyPlan(T.res.r.type);};
+$('tAlt').onclick=()=>{if(T.res&&T.res.r)applyPlan($('tAlt').dataset.type);};
 
 /* ---------- 操作 ---------- */
 $('startBtn').onclick=startCam;
 $('chartBtn0').onclick=showChart;
-$('testBtn0').onclick=testOpen;$('testBtn').onclick=testOpen;
+$('testBtn0').onclick=()=>testOpen(false);$('testBtn').onclick=()=>testOpen(false);
 $('chart').onclick=()=>{if(st.chart)startCam();else showChart();};
 $('flip').onclick=()=>{st.facing=st.facing==='environment'?'user':'environment';startCam();};
 $('freeze').onclick=()=>{
   if(!st.ready||st.chart) return;
   st.frozen=!st.frozen;
   if(st.frozen) fctx.drawImage(video,0,0,frozenCv.width,frozenCv.height);
-  $('freeze').textContent=st.frozen?'再開':'一時停止';};
+  $('freezeL').textContent=st.frozen?'再開':'一時停止';};
 document.querySelectorAll('input[name=type]').forEach(i=>i.onchange=()=>{st.type=i.value;refresh();save();});
 document.querySelectorAll('input[name=proc]').forEach(i=>i.onchange=()=>{
   st.proc=+i.value;
   if(st.proc===3&&!st.target&&st.lastRGB) setTarget(st.lastRGB);
   syncUI();updateUniforms();save();});
-$('simChk').onchange=e=>{st.sim=e.target.checked;updateUniforms();};
+$('simChk').onchange=e=>{st.sim=e.target.checked;syncUI();updateUniforms();save();};
+$('cmpChk').onchange=e=>{st.cmp=e.target.checked;st.split=.5;syncUI();updateUniforms();};
 $('sev').oninput=e=>{st.sev=e.target.value/100;syncUI();refresh();save();};
 $('beta').oninput=e=>{st.beta=e.target.value/100;syncUI();refresh();save();};
 $('ang').oninput=e=>{setAng(+e.target.value);save();};
